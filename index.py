@@ -102,6 +102,15 @@ class FileSyncApp(QMainWindow):
         self.b_input = QLineEdit(default_b_path, self)
         self.layout.addWidget(self.b_input)
 
+        self.select_label = QLabel('填入路径或选择你想要修改的存档', self)
+        self.layout.addWidget(self.select_label)
+
+        # 创建下拉框
+        self.save_combo = QComboBox(self)
+        self.save_combo.addItems(['', '选择全满级存档', '选择全皮肤存档[等级随机]'])
+        self.save_combo.currentIndexChanged.connect(self.on_save_combo_changed)
+        self.layout.addWidget(self.save_combo)
+
         # 日志输出框
         self.log_output = QTextEdit(self)
         self.log_output.setReadOnly(True)
@@ -111,6 +120,8 @@ class FileSyncApp(QMainWindow):
         self.log_output.append("欢迎使用战锤40K: 星际战士2 存档同步器")
         self.log_output.append("请设置修改存档目录和游戏存档目录，并点击开始同步")
         self.log_output.append("Author:e1GhtXL_")
+
+
 
         # 开始/停止按钮
         self.start_button = QPushButton("开始同步", self)
@@ -147,6 +158,19 @@ class FileSyncApp(QMainWindow):
             self.show_warning()
         else:
             self.load_previous_paths()
+
+    def on_save_combo_changed(self, index):
+        if index == 1:  # '选择全满级存档'
+            base_path = resource_path('')
+            path = os.path.join(base_path, 'Save', 'quanmanji_cundang', 'Main', 'config')
+            self.a_input.setText(path)
+        elif index == 2:  # '选择全皮肤存档[等级随机]'
+            base_path = resource_path('')
+            path = os.path.join(base_path, 'Save', 'QuanPifu[LevelRandom]', 'Main', 'config')
+            self.a_input.setText(path)
+        else:
+            # 清空 A 目录输入框
+            self.a_input.clear()
 
     def center(self):
         """将窗口移动到屏幕中央"""
